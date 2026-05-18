@@ -137,14 +137,18 @@ include __DIR__ . '/../includes/header.php';
                                     <?php endif; ?>
 
                                     <?php if ($role === 'admin'): ?>
-                                        <form method="post" action="<?php echo htmlspecialchars(app_url('pages/animals_delete.php'), ENT_QUOTES, 'UTF-8'); ?>" class="d-inline">
+                                        <form method="post"
+                                              action="<?php echo htmlspecialchars(app_url('pages/animals_delete.php'), ENT_QUOTES, 'UTF-8'); ?>"
+                                              class="d-inline js-confirm-form"
+                                              data-confirm-title="<?php echo htmlspecialchars('Delete animal record?', ENT_QUOTES, 'UTF-8'); ?>"
+                                              data-confirm-message="<?php echo htmlspecialchars('This will permanently remove this animal profile and its linked records.', ENT_QUOTES, 'UTF-8'); ?>"
+                                              data-confirm-button="<?php echo htmlspecialchars('Delete Animal', ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="id" value="<?php echo htmlspecialchars((string) $animal['id'], ENT_QUOTES, 'UTF-8'); ?>">
                                             <button type="submit"
                                                     class="btn-icon btn-icon-danger"
                                                     title="<?php echo htmlspecialchars('Delete animal', ENT_QUOTES, 'UTF-8'); ?>"
-                                                    aria-label="<?php echo htmlspecialchars('Delete animal', ENT_QUOTES, 'UTF-8'); ?>"
-                                                    onclick="return confirm('<?php echo htmlspecialchars('Delete this animal?', ENT_QUOTES, 'UTF-8'); ?>');">
+                                                    aria-label="<?php echo htmlspecialchars('Delete animal', ENT_QUOTES, 'UTF-8'); ?>">
                                                 <?php echo vet_icon('trash'); ?>
                                             </button>
                                         </form>

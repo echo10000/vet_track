@@ -197,21 +197,30 @@ include __DIR__ . '/../includes/header.php';
                                     <?php endif; ?>
 
                                     <?php if ($role === 'admin'): ?>
-                                        <form method="post" action="<?php echo htmlspecialchars(app_url('pages/appointments_delete.php'), ENT_QUOTES, 'UTF-8'); ?>" class="d-inline">
+                                        <form method="post"
+                                              action="<?php echo htmlspecialchars(app_url('pages/appointments_delete.php'), ENT_QUOTES, 'UTF-8'); ?>"
+                                              class="d-inline js-confirm-form"
+                                              data-confirm-title="<?php echo htmlspecialchars('Delete appointment?', ENT_QUOTES, 'UTF-8'); ?>"
+                                              data-confirm-message="<?php echo htmlspecialchars('This appointment will be permanently removed from the schedule.', ENT_QUOTES, 'UTF-8'); ?>"
+                                              data-confirm-button="<?php echo htmlspecialchars('Delete Appointment', ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="id" value="<?php echo htmlspecialchars((string) $appointment['id'], ENT_QUOTES, 'UTF-8'); ?>">
                                             <button type="submit"
                                                     class="btn-icon btn-icon-danger"
                                                     title="<?php echo htmlspecialchars('Delete appointment', ENT_QUOTES, 'UTF-8'); ?>"
-                                                    aria-label="<?php echo htmlspecialchars('Delete appointment', ENT_QUOTES, 'UTF-8'); ?>"
-                                                    onclick="return confirm('<?php echo htmlspecialchars('Delete this appointment?', ENT_QUOTES, 'UTF-8'); ?>');">
+                                                    aria-label="<?php echo htmlspecialchars('Delete appointment', ENT_QUOTES, 'UTF-8'); ?>">
                                                 <?php echo vet_icon('trash'); ?>
                                             </button>
                                         </form>
                                     <?php endif; ?>
 
                                     <?php if ($role === 'owner' && $appointment['status'] === 'pending'): ?>
-                                        <form method="post" action="<?php echo htmlspecialchars(app_url('pages/appointments.php'), ENT_QUOTES, 'UTF-8'); ?>" class="d-inline">
+                                        <form method="post"
+                                              action="<?php echo htmlspecialchars(app_url('pages/appointments.php'), ENT_QUOTES, 'UTF-8'); ?>"
+                                              class="d-inline js-confirm-form"
+                                              data-confirm-title="<?php echo htmlspecialchars('Cancel appointment?', ENT_QUOTES, 'UTF-8'); ?>"
+                                              data-confirm-message="<?php echo htmlspecialchars('This will mark the pending appointment as cancelled.', ENT_QUOTES, 'UTF-8'); ?>"
+                                              data-confirm-button="<?php echo htmlspecialchars('Cancel Appointment', ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="action" value="cancel">
                                             <input type="hidden" name="appointment_id"
@@ -219,8 +228,7 @@ include __DIR__ . '/../includes/header.php';
                                             <button type="submit"
                                                     class="btn-icon btn-icon-danger"
                                                     title="<?php echo htmlspecialchars('Cancel appointment', ENT_QUOTES, 'UTF-8'); ?>"
-                                                    aria-label="<?php echo htmlspecialchars('Cancel appointment', ENT_QUOTES, 'UTF-8'); ?>"
-                                                    onclick="return confirm('<?php echo htmlspecialchars('Cancel this appointment?', ENT_QUOTES, 'UTF-8'); ?>');">
+                                                    aria-label="<?php echo htmlspecialchars('Cancel appointment', ENT_QUOTES, 'UTF-8'); ?>">
                                                 <?php echo vet_icon('trash'); ?>
                                             </button>
                                         </form>

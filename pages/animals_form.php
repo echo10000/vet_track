@@ -15,6 +15,7 @@ $isEdit = $id > 0;
 $errors = [];
 
 $speciesOptions = ['dog', 'cat', 'bird', 'rabbit', 'other'];
+$storedSpeciesOptions = array_diff($speciesOptions, ['other']);
 
 if ($role === 'staff') {
     set_flash('danger', 'Staff can view animal profiles but cannot add or edit them.');
@@ -25,6 +26,7 @@ if ($role === 'staff') {
 $animal = [
     'name' => '',
     'species' => 'dog',
+    'species_other' => '',
     'breed' => '',
     'age' => '',
     'weight' => '',
@@ -71,12 +73,17 @@ if ($isEdit) {
     }
 
     $animal = $loadedAnimal;
+    if (!in_array($animal['species'], $storedSpeciesOptions, true)) {
+        $animal['species_other'] = $animal['species'] === 'other' ? '' : $animal['species'];
+        $animal['species'] = 'other';
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf_token();
     $animal['name'] = trim($_POST['name'] ?? '');
     $animal['species'] = $_POST['species'] ?? '';
+    $animal['species_other'] = trim($_POST['species_other'] ?? '');
     $animal['breed'] = trim($_POST['breed'] ?? '');
     $animal['age'] = trim($_POST['age'] ?? '');
     $animal['weight'] = trim($_POST['weight'] ?? '');
@@ -93,6 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!in_array($animal['species'], $speciesOptions, true)) {
         $errors['species'] = 'Please select a valid species.';
+    }
+
+    if ($animal['species'] === 'other') {
+        if ($animal['species_other'] === '') {
+            $errors['species_other'] = 'Please enter the animal species.';
+        } elseif (strlen($animal['species_other']) > 100) {
+            $errors['species_other'] = 'Species must be 100 characters or fewer.';
+        }
     }
 
     if ($animal['breed'] === '') {
@@ -119,6 +134,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
+        $speciesToSave = $animal['species'] === 'other'
+            ? $animal['species_other']
+            : $animal['species'];
+
         if ($isEdit) {
             if ($role === 'owner') {
                 $stmt = $pdo->prepare(
@@ -128,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 $stmt->execute([
                     'name' => $animal['name'],
-                    'species' => $animal['species'],
+                    'species' => $speciesToSave,
                     'breed' => $animal['breed'],
                     'age' => $animal['age'],
                     'weight' => $animal['weight'],
@@ -144,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 $stmt->execute([
                     'name' => $animal['name'],
-                    'species' => $animal['species'],
+                    'species' => $speciesToSave,
                     'breed' => $animal['breed'],
                     'age' => $animal['age'],
                     'weight' => $animal['weight'],
@@ -162,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([
                 'owner_id' => (int) $animal['owner_id'],
                 'name' => $animal['name'],
-                'species' => $animal['species'],
+                'species' => $speciesToSave,
                 'breed' => $animal['breed'],
                 'age' => $animal['age'],
                 'weight' => $animal['weight'],
@@ -251,6 +270,21 @@ include __DIR__ . '/../includes/header.php';
                         <?php if (isset($errors['species'])): ?>
                             <div class="invalid-feedback">
                                 <?php echo htmlspecialchars($errors['species'], ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="mb-3 form-floating-custom" id="speciesOtherGroup" <?php echo htmlspecialchars($animal['species'] === 'other' ? '' : 'hidden', ENT_QUOTES, 'UTF-8'); ?>>
+                        <input type="text" name="species_other" id="species_other"
+                               class="form-control <?php echo htmlspecialchars(isset($errors['species_other']) ? 'is-invalid' : '', ENT_QUOTES, 'UTF-8'); ?>"
+                               placeholder=" "
+                               value="<?php echo htmlspecialchars($animal['species_other'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        <label for="species_other" class="form-label">
+                            <?php echo htmlspecialchars('Other animal species', ENT_QUOTES, 'UTF-8'); ?>
+                        </label>
+                        <?php if (isset($errors['species_other'])): ?>
+                            <div class="invalid-feedback">
+                                <?php echo htmlspecialchars($errors['species_other'], ENT_QUOTES, 'UTF-8'); ?>
                             </div>
                         <?php endif; ?>
                     </div>

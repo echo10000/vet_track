@@ -32,7 +32,7 @@ CREATE TABLE animals (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     owner_id INT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
-    species ENUM('dog','cat','bird','rabbit','other') NOT NULL DEFAULT 'other',
+    species VARCHAR(100) NOT NULL DEFAULT 'other',
     breed VARCHAR(100) DEFAULT NULL,
     age DECIMAL(5,2) DEFAULT NULL,
     weight DECIMAL(6,2) DEFAULT NULL,
