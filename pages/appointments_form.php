@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($role === 'owner') {
         $appointment['staff_id'] = null;
     } else {
-        $appointment['staff_id'] = $appointment['staff_id'] === '' ? null : (int) $appointment['staff_id'];
+        $appointment['staff_id'] = empty($appointment['staff_id']) ? null : (int) $appointment['staff_id'];
     }
 
     if ((int) $appointment['animal_id'] <= 0) {
